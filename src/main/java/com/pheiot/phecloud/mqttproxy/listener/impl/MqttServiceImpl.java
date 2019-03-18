@@ -6,6 +6,7 @@ package com.pheiot.phecloud.mqttproxy.listener.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.pheiot.phecloud.mqttproxy.listener.MqttService;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -67,6 +70,7 @@ public class MqttServiceImpl implements MqttService {
                     //获取所有报文
                     JSONObject jsonPayload = JSONObject.parseObject(msgPayload.trim());
 
+                    log.debug("接收消息 topic: {}", topic);
                     log.debug("接收消息 payload: {}", jsonPayload);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -122,7 +126,22 @@ public class MqttServiceImpl implements MqttService {
 
     @Override
     public void publishMessage(String deviceSn, String topic, String message, int qos) throws Exception {
-        //TODO public message
+        MqttClient client = connect("mqtt_test" + UUID.randomUUID());
+        try {
+            log.info("发送的消息内容：" + message);
+            MqttMessage mqttMessage = new MqttMessage();
+            mqttMessage.setPayload(message.getBytes());
+            mqttMessage.setQos(qos);
+            mqttMessage.setRetained(false);
+            client.publish(topic, mqttMessage);
+            client.disconnect();
+        } catch (MqttException e) {
+            log.error(e.getMessage());
+        } finally {
+            if (client != null) {
+                client.close();
+            }
+        }
     }
 
     @Override

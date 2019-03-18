@@ -24,6 +24,5 @@ hs_err_pid*
 .idea/
 *.iml
 data/*
-log/*
-
-log/
+logs/*
+logs/
