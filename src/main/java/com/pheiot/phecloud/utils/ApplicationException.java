@@ -1,4 +1,8 @@
-package com.pheiot.phecloud.mqttproxy.utils;
+/*
+ * Copyright (c) 2019. For Pheiot com
+ */
+
+package com.pheiot.phecloud.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

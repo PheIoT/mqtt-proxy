@@ -4,7 +4,7 @@
 
 package com.pheiot.phecloud.mqttproxy.listener;
 
-import com.pheiot.phecloud.mqttproxy.utils.ApplicationException;
+import com.pheiot.phecloud.utils.ApplicationException;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -136,6 +136,7 @@
     <logger name="com.netflix" level="info"/>
     <logger name="org.apache" level="info"/>
 
+    <logger name="org.springframework.data.mongodb.core" level="DEBUG"/>
 
     <!--指定最基础的日志输出级别-->
     <root level="debug">
