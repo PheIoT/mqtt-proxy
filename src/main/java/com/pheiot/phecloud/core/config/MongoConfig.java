@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-ø
+
 @Configuration
 @EnableMongoRepositories(basePackages = "com.pheiot.phecloud.core.dao")
 @PropertySource("classpath:application.properties")
@@ -38,8 +38,10 @@ public class MongoConfig extends AbstractMongoConfiguration {
         MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
         builder.socketTimeout(10 * 1000);
 
-        return new MongoClient(new ServerAddress(env.getProperty(MONGODB_URI), Integer.valueOf(env.getProperty(MONGODB_PORT)))
-                , credential, builder.build());
+        return new MongoClient(new ServerAddress(env.getProperty(MONGODB_URI),
+                Integer.valueOf(env.getProperty(MONGODB_PORT))),
+                credential,
+                builder.build());
     }
 
     @Override
