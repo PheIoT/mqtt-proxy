@@ -1,67 +1,43 @@
--- -- Table: t_product
--- DROP TABLE IF EXISTS `t_product`;
--- CREATE TABLE `t_product` (
---   `id` bigint(20) NOT NULL AUTO_INCREMENT,
---   `name` varchar(255) DEFAULT NULL COMMENT '产品名称',
---   `keyt` varchar(255) DEFAULT NULL COMMENT '产品秘钥',
---   `version` varchar(255) DEFAULT NULL COMMENT '产品版本，两类Base和Higher',
---   `type` varchar(255) DEFAULT NULL COMMENT '产品类型，只有两类Pro和Gateway',
---   `deviceNum` varchar(255) DEFAULT NULL COMMENT '设备数量，初始为0',
---   `createTime` varchar(255) DEFAULT NULL COMMENT '创建时间',
---   `description` varchar(255) DEFAULT NULL COMMENT '产品描述',
---   `area` varchar(255) DEFAULT NULL COMMENT '区域',
---   PRIMARY KEY (`id`)
--- ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
--- INSERT INTO `t_product` VALUES ('1', 'P1 name', '122455645', 'Base', 'Product', '1', '2015-01-01 14:36:45', '产品描述，产品描述', '广东/珠海/香洲');
--- INSERT INTO `t_product` VALUES ('2', 'P2 name', '154542188', 'Higher', 'Gateway', '1', '2015-01-01 15-01:55', '这是一段关于该产品的描述内容', '广东/珠海/香洲');
---
--- -- Table: t_device_type
--- DROP TABLE IF EXISTS `t_device_type`;
--- CREATE TABLE `t_device_type` (
---   `id` bigint(20) NOT NULL AUTO_INCREMENT,
---   `name` varchar(255) DEFAULT NULL COMMENT '名称',
---   `typeSerialNum` varchar(255) DEFAULT NULL COMMENT '设备种类序列号，存设备的序列号',
---   PRIMARY KEY (`id`)
--- ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
---
--- INSERT INTO `t_device_type` VALUES ('1', 'AGV', '123456');
--- INSERT INTO `t_device_type` VALUES ('2', 'Caller', '123');
---
--- -- Table: t_device_attr
--- DROP TABLE IF EXISTS `t_device_attr`;
--- CREATE TABLE `t_device_attr` (
---   `id` bigint(20) NOT NULL AUTO_INCREMENT,
---   `attrSerialNum` varchar(255) DEFAULT NULL COMMENT '属性的序列号，ID',
---   `defaultValue` varchar(255) DEFAULT NULL COMMENT '默认值',
---   `deviceTypeSn` varchar(255) DEFAULT NULL COMMENT '设备的种类  存的是设备种类表中的sn',
---   `name` varchar(255) DEFAULT NULL COMMENT '名称',
---   `remark` varchar(255) DEFAULT NULL COMMENT '附加内容',
---   PRIMARY KEY (`id`)
--- ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
---
--- INSERT INTO `t_device_attr` VALUES ('1', '123', '11', '123456', '属性1', '其他');
--- INSERT INTO `t_device_attr` VALUES ('2', '123', '11', '123', '属性1', '其他');
---
--- -- Table: t_device
--- DROP TABLE IF EXISTS `t_device`;
--- CREATE TABLE `t_device` (
---   `id` bigint(20) NOT NULL AUTO_INCREMENT,
---   `deviceName` varchar(255) DEFAULT NULL COMMENT '设备名称',
---   `deviceStyle` varchar(255) DEFAULT NULL COMMENT '设备类型 网关、设备',
---   `serialNumber` varchar(255) DEFAULT NULL COMMENT '序列号',
---   `ip` varchar(255) DEFAULT NULL COMMENT 'IP地址',
---   `password` varchar(255) DEFAULT NULL COMMENT '设备密码',
---   `status` varchar(255) DEFAULT NULL COMMENT '启用状态  启用、不启用"',
---   `activeStatus` varchar(255) DEFAULT NULL COMMENT '激活状态  激活、未激活',
---   `deviceTypeSn` varchar(255) DEFAULT NULL COMMENT '设备种类  存的是设备种类表中的sn',
---   `productId` varchar(255) DEFAULT NULL COMMENT '产品ID',
---   `createTime` varchar(255) DEFAULT NULL COMMENT '创建时间',
---   `updateTime` varchar(255) DEFAULT NULL COMMENT '更新时间',
---   `activeTime` varchar(255) DEFAULT NULL COMMENT '激活时间',
---   `lastOnlineTime` varchar(255) DEFAULT NULL COMMENT '最后上线时间',
---   PRIMARY KEY (`id`),
---   UNIQUE KEY `deviceName` (`deviceName`)
--- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
---
--- INSERT INTO `t_device` VALUES ('1', '123', 'Eequiment', '123', '213', null, 'Y', null, '123', '1', '2018-11-23 02:38:44.47', null, null, null);
--- INSERT INTO `t_device` VALUES ('2', 'divice测试', 'Gateway', 'd123445', '1212131414', null, 'Y', null, '123', '2', '2018-11-23 02:39:43.018', null, null, null);
+// mongodb 数据结构示例
+// collection 命名 : ${product_key}-${device_key}
+// document : 以每小时为一个document,
+{
+    "_id": ObjectId("5c8f60791147651bd37de027"),
+
+    //采集所属的时间,按每小时划分
+    "hours": ISODate("2019-03-18T01:00:00.000Z"),
+
+    //设备key
+    "devkey": 123456789012,
+
+    // 采集传感器的具体属性
+    "metrics": {
+    // 属性名:temp, 内容 - { 发送分钟数:传感器值 }
+        "temp": {
+            "0": "16",
+            "5": "18",
+            "10": "20",
+            "22": "55"
+        },
+        "stat": {
+            "0": "A",
+            "5": "B",
+            "10": "C",
+            "22": "OH"
+        }
+    }
+}
+{
+    "_id": ObjectId("5c8f60791147651bd37de028"),
+    "devkey": "123456789012",
+    "hours": ISODate("2019-03-18T02:00:00.000Z"),
+    "metrics": {
+        "temp": {
+            "22": "55"
+        },
+        "stat": {
+            "22": "OH"
+        }
+    }
+}
+
