@@ -2,15 +2,16 @@
  * Copyright (c) 2019. For Pheiot com
  */
 
-package com.pheiot.phecloud.mqttproxy.listener.impl;
+package com.pheiot.phecloud.mqttproxy.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pheiot.phecloud.mqttproxy.listener.MqttService;
-import org.apache.commons.lang.StringUtils;
+import com.google.common.eventbus.EventBus;
+import com.pheiot.phecloud.mqttproxy.event.MessageReceivedEvent;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +20,11 @@ import java.util.UUID;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class MqttServiceImpl implements MqttService {
-
+public class MqttHandlerImpl implements MqttHandler {
     private static Logger log = LoggerFactory.getLogger("mqtt");
+
+    @Autowired
+    private EventBus eventBus;
 
     @Value("${mqtt.host}")
     private String host;
@@ -29,6 +32,8 @@ public class MqttServiceImpl implements MqttService {
     private String user;
     @Value("${mqtt.password}")
     private String password;
+
+    public static String TOPIC_MQTT = "$SYS/brokers";
 
     @Override
     public MqttClient connect(String clientId) throws MqttException {
@@ -62,13 +67,19 @@ public class MqttServiceImpl implements MqttService {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-
                 try {
                     // subscribe后得到的消息会执行到这里面
                     String msgPayload = new String(message.getPayload()).trim();
 
                     //获取所有报文
                     JSONObject jsonPayload = JSONObject.parseObject(msgPayload.trim());
+                    if (topic.startsWith(TOPIC_MQTT)) {
+                        //TODO 处理设备连接消息
+                        log.debug("设备上线：{}", jsonPayload);
+                    } else {
+                        //设备实际消息,触发消息处理事件
+                        eventBus.post(new MessageReceivedEvent(jsonPayload));
+                    }
 
                     log.debug("接收消息 topic: {}", topic);
                     log.debug("接收消息 payload: {}", jsonPayload);
@@ -93,7 +104,6 @@ public class MqttServiceImpl implements MqttService {
 
     @Override
     public void subscribe(MqttClient client, String topic) throws MqttException {
-
         try {
             subscribe(client, topic, 2);
         } catch (MqttException e) {
@@ -116,7 +126,6 @@ public class MqttServiceImpl implements MqttService {
 
     @Override
     public void subscribe(MqttClient client, String[] topics, int[] qos) {
-
         try {
             client.subscribe(topics, qos);
         } catch (MqttException e) {

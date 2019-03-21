@@ -4,6 +4,7 @@
 
 package com.pheiot.phecloud.mqttproxy.listener;
 
+import com.pheiot.phecloud.mqttproxy.handler.MqttHandler;
 import com.pheiot.phecloud.utils.ApplicationException;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class MqttContextListener implements ServletContextListener {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private MqttService mqttListener;
+    private MqttHandler mqttListener;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -39,9 +40,9 @@ public class MqttContextListener implements ServletContextListener {
             String topic = "$SYS/brokers/+/clients/#";
             MqttClient clientCheck = mqttListener.connect(clientId);
             if(clientCheck.isConnected()){
-                mqttListener.subscribe(clientCheck,topic);
+                mqttListener.subscribe(clientCheck, topic);
             }
-            MqttClient client = mqttListener.connect("MQTT-PROXY-"+UUID.randomUUID());
+            MqttClient client = mqttListener.connect("PHEIOT-MQTT-PROXY-"+UUID.randomUUID());
             client.subscribe("+/+/update");
             client.subscribe("+/+/error");
         }catch (ApplicationException e) {

@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.pheiot.bamboo.common.utils.mapper.BeanMapper;
 import com.pheiot.bamboo.common.utils.time.DateFormatUtil;
+import com.pheiot.bamboo.common.utils.time.DateUtil;
 import com.pheiot.phecloud.core.dao.DeviceDataDao;
 import com.pheiot.phecloud.core.dto.DeviceDataDto;
 import com.pheiot.phecloud.core.dto.DeviceDataQueryConditionDto;
@@ -42,12 +43,6 @@ public class DeviceDataServiceImpl implements DeviceDataService {
             throw new ApplicationException("参数错误。");
         }
 
-//        DateTimeFormatter format = DateTimeFormat.forPattern(DateFormatUtil.PATTERN_DEFAULT_ON_SECOND);
-//        Date start = DateTime.parse("2019-03-18 09:00:00", format).toDate();
-//        Date end = DateTime.parse("2019-03-18 09:30:00", format).toDate();
-//        Date start = DateTime.parse(condition.getStartTime(), format).toDate();
-//        Date end = DateTime.parse(condition.getEndTime(), format).toDate();
-
         List<DeviceData> list = deviceDataDao.findDeviceData(condition);
         List<DeviceDataDto> response = Lists.newArrayList();
 
@@ -60,7 +55,37 @@ public class DeviceDataServiceImpl implements DeviceDataService {
     }
 
     @Override
-    public void addMetrics(String productKey, String deviceKey, Map<String, Object> addParams) {
+    public void addMetrics(Map<String, Object> data) {
+        if (StringUtils.isBlank(data.get("product_key").toString())
+                || StringUtils.isBlank(data.get("dev_key").toString())) {
+            throw new ApplicationException("参数错误。");
+        }
 
+        String productKey = data.get("product_key").toString();
+        String devKey = data.get("dev_key").toString();
+        String ts = data.get("ts").toString();
+
+        //构造当前上传时间对应的整点小时
+        DateTimeFormatter format = DateTimeFormat.forPattern(DateFormatUtil.PATTERN_DEFAULT_ON_SECOND);
+        DateTime tsTime = DateTime.parse(ts, format);
+        Date beginOfHour = DateUtil.beginOfHour(tsTime.toDate());
+
+        //构造查询条件，用来定位数据文档
+        DeviceDataQueryConditionDto condition = new DeviceDataQueryConditionDto();
+        condition.setProductKey(productKey);
+        condition.setDevKey(devKey);
+        condition.setExactHoursTime(beginOfHour);
+        condition.setMinuteOfHours(String.valueOf(tsTime.getMinuteOfHour()));
+
+        //metrics 数据格式为 {key:value}
+        //如：{ "tmp" : "25", "attr1" : "Hello" }
+        Map metricsMap = (Map) data.get("metrics");
+
+        //判断是否已经存在文档，存在则更新，不存在则创建
+        if (deviceDataDao.isExistDocument(condition)) {
+            deviceDataDao.addMetrics(condition, metricsMap);
+        } else {
+            deviceDataDao.addDeviceData(condition, metricsMap);
+        }
     }
 }

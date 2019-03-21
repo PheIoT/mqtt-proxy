@@ -2,7 +2,7 @@
  * Copyright (c) 2019. For Pheiot com
  */
 
-package com.pheiot.phecloud.mqttproxy.listener;
+package com.pheiot.phecloud.mqttproxy.handler;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -12,7 +12,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
  * @author Peter Li
  * @date 2019/3/11
  */
-public interface MqttService {
+public interface MqttHandler {
 
     /**
      * 连接MQTT服务器

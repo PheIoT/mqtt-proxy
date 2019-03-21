@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration> 
        
+    <property name="PROJECT_NAME" value="MQTT-Proxy"/>
     <property name="logback.logdir" value="./logs"/>
 
     <!--读取配置文件的属性-->
@@ -21,11 +22,11 @@
             如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
             的日志改名为今天的日期。即，<File> 的日志都是当天的。
         -->
-        <File>${logback.logdir}/coustom-info.${logback.appName}.log</File>
+        <File>${logback.logdir}/custom-info.${logback.appName}.log</File>
         <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
-            <FileNamePattern>${logback.logdir}/coustom-info.${logback.appName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${logback.logdir}/custom-info.${logback.appName}.%d{yyyy-MM-dd}.log</FileNamePattern>
             <!--只保留最近90天的日志-->
             <maxHistory>90</maxHistory>
             <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
@@ -35,7 +36,7 @@
         <!--日志输出编码格式化-->
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} [%thread] %-5level %X{log_type} %logger{36} %line - %msg%n</pattern>
+            <pattern>[${PROJECT_NAME}][%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level [%F:%L] | %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -71,7 +72,7 @@
         <!--日志输出编码格式化-->
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} [%thread] %-5level %X{log_type} %logger{36} %line - %msg%n</pattern>
+            <pattern>[${PROJECT_NAME}][%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level [%F:%L] | %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -99,8 +100,7 @@
         <!--日志输出编码格式化-->
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} - [Thread:%thread] - [level: %-5level] [log_type:%X{log_type}] - [%class : %method : %line] - %msg %n
-            </pattern>
+            <pattern>[${PROJECT_NAME}][%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level [%F:%L] | %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -116,8 +116,7 @@
        
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">       
         <encoder charset="UTF-8"> <!-- encoder 可以指定字符集，对于中文输出有意义 -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} - [Thread:%thread] - [level: %-5level] [log_type:%X{log_type}] - [%class : %method : %line] - %msg %n
-            </pattern>
+            <pattern>[${PROJECT_NAME}][%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level [%F:%L] | %msg%n</pattern>
         </encoder>
     </appender>
 

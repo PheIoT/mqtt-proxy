@@ -98,15 +98,12 @@ public class DeviceDaoTest {
         Date d1 = DateUtil.beginOfHour(now1.toDate());
         int minute = now1.getMinuteOfHour();
 
-//        map.put("hours", d1);
-//        map.put("minute", minute);
-
         condition.setExactHoursTime(d1);
         condition.setMinuteOfHours(String.valueOf(minute));
 
         Map<String, Object> data = Maps.newHashMap();
-        data.put("metrics.temp", "55");
-        data.put("metrics.stat", "OH");
+        data.put("temp", "55");
+        data.put("stat", "OH");
 
         deviceDataDao.addMetrics(condition, data);
     }

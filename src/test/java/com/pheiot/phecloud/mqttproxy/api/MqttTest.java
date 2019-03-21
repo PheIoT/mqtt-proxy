@@ -4,12 +4,11 @@
 
 package com.pheiot.phecloud.mqttproxy.api;
 
-import com.pheiot.phecloud.mqttproxy.listener.MqttService;
+import com.pheiot.phecloud.mqttproxy.handler.MqttHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class MqttTest {
 
     @Autowired
-    private MqttService mqttService;
+    private MqttHandler mqttService;
 
     @Test
     public void mqttTest() {

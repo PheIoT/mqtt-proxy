@@ -14,5 +14,13 @@ public interface DeviceDataService {
 
     List<DeviceDataDto> findPeriodDataByProductAndDevice(DeviceDataQueryConditionDto condition);
 
-    void addMetrics(String productKey, String deviceKey, Map<String, Object> addParams);
+    /**
+     * 增加传感器上传的数据。如果当前小时已存在记录，则更新，如果不存在，则新增一条。
+     *
+     * 必要字段：
+     * productKey - 产品Key
+     * deviceKey - 设备Key
+     * exactHoursTime - 数据当前小时所对应时间
+     */
+    void addMetrics(Map<String, Object> data);
 }
