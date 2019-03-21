@@ -28,7 +28,7 @@ public class MqttContextListener implements ServletContextListener {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private MqttHandler mqttListener;
+    private MqttHandler mqttHandler;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -38,11 +38,11 @@ public class MqttContextListener implements ServletContextListener {
         try {
             String clientId = "SystemCheck"+UUID.randomUUID();
             String topic = "$SYS/brokers/+/clients/#";
-            MqttClient clientCheck = mqttListener.connect(clientId);
+            MqttClient clientCheck = mqttHandler.connect(clientId);
             if(clientCheck.isConnected()){
-                mqttListener.subscribe(clientCheck, topic);
+                mqttHandler.subscribe(clientCheck, topic);
             }
-            MqttClient client = mqttListener.connect("PHEIOT-MQTT-PROXY-"+UUID.randomUUID());
+            MqttClient client = mqttHandler.connect("PHEIOT-MQTT-PROXY-"+UUID.randomUUID());
             client.subscribe("+/+/update");
             client.subscribe("+/+/error");
         }catch (ApplicationException e) {

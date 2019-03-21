@@ -27,7 +27,6 @@ public class MessageEventListener {
     @Subscribe
     public void listen(MessageReceivedEvent event) {
         message = event.getMessage();
-        Map<String, Object> data = JsonMapper.defaultMapper().fromJson(message.toString(), Map.class);
-        deviceDataService.addMetrics(data);
+        deviceDataService.addMetrics(JsonMapper.defaultMapper().fromJson(message.toString(), Map.class));
     }
 }
