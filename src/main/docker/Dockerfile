@@ -7,7 +7,7 @@ ENV PROXY_VERSION=1.0.0-SNAPSHOT
 
 VOLUME /tmp
 
-ADD mqtt-proxy-$PROXY_VERSION.jar app.jar
+ADD phecloud-mqtt-proxy-$PROXY_VERSION.jar app.jar
 
 RUN /sbin/ip route|awk '/default/ { print  $3,"\tdockerhost" }' >> /etc/hosts
 RUN sh -c 'touch /app.jar'

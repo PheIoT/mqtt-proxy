@@ -77,6 +77,8 @@ public class MqttHandlerImpl implements MqttHandler {
                         //TODO 处理设备连接消息
                         log.debug("设备上线：{}", jsonPayload);
                     } else {
+                        //TODO 权限校验和自动注册
+                        
                         //设备实际消息,触发消息处理事件
                         eventBus.post(new MessageReceivedEvent(jsonPayload));
                     }
